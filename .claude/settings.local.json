@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter analyze *)",
+      "Bash(flutter test *)",
+      "Bash(timeout 480 flutter build web --no-tree-shake-icons)",
+      "Bash(flutter build *)",
+      "Bash(flutter devices *)",
+      "Bash(timeout 90 flutter run -d RFGYB25Q8WD --debug)",
+      "Bash(pkill -f \"flutter run\")",
+      "Bash(pkill -f \"frontend_server\")"
+    ]
+  }
+}
