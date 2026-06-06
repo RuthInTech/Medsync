@@ -3,10 +3,11 @@ import 'api_service.dart';
 
 class AuthService {
   static const _storage = FlutterSecureStorage();
-  static const _tokenKey = 'siyaphila_token';
-  static const _roleKey = 'siyaphila_role';
-  static const _userIdKey = 'siyaphila_user_id';
-  static const _onboardedKey = 'siyaphila_onboarded';
+  static const _tokenKey = 'medisync_token';
+  static const _roleKey = 'medisync_role';
+  static const _userIdKey = 'medisync_user_id';
+  static const _onboardedKey = 'medisync_onboarded';
+  static const _nameKey = 'medisync_name';
 
   Future<bool> isLoggedIn() async {
     final token = await _storage.read(key: _tokenKey);
@@ -15,10 +16,12 @@ class AuthService {
 
   Future<String?> getToken() => _storage.read(key: _tokenKey);
   Future<String?> getRole() => _storage.read(key: _roleKey);
+  Future<String?> getName() => _storage.read(key: _nameKey);
   Future<int?> getUserId() async {
     final id = await _storage.read(key: _userIdKey);
     return id != null ? int.tryParse(id) : null;
   }
+
   Future<bool> isOnboarded() async {
     final val = await _storage.read(key: _onboardedKey);
     return val == 'true';
@@ -42,6 +45,7 @@ class AuthService {
       'name': name,
       'role': role,
     });
+    await _storage.write(key: _nameKey, value: name);
     return _saveAndReturn(data);
   }
 

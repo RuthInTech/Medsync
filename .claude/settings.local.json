@@ -20,7 +20,11 @@
       "Bash(pip install *)",
       "Bash(python seed_test.py)",
       "Bash(/tmp/siyaphila-test-env/bin/pip install *)",
-      "Bash(/tmp/siyaphila-test-env/bin/python seed_test.py)"
+      "Bash(/tmp/siyaphila-test-env/bin/python seed_test.py)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(git commit *)"
     ]
   }
 }

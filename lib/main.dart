@@ -51,6 +51,12 @@ class MedisyncAppState extends State<MedisyncApp> {
       _authNotifier.value = _AuthStatus.loggedOut;
       return;
     }
+    // Clinicians skip onboarding entirely
+    final role = await auth.getRole();
+    if (role == 'clinician') {
+      _authNotifier.value = _AuthStatus.loggedIn;
+      return;
+    }
     final onboarded = await auth.isOnboarded();
     _authNotifier.value =
         onboarded ? _AuthStatus.loggedIn : _AuthStatus.needsOnboarding;
@@ -58,6 +64,11 @@ class MedisyncAppState extends State<MedisyncApp> {
 
   void onLoginSuccess() async {
     final auth = AuthService();
+    final role = await auth.getRole();
+    if (role == 'clinician') {
+      _authNotifier.value = _AuthStatus.loggedIn;
+      return;
+    }
     final onboarded = await auth.isOnboarded();
     _authNotifier.value =
         onboarded ? _AuthStatus.loggedIn : _AuthStatus.needsOnboarding;
@@ -78,7 +89,7 @@ class MedisyncAppState extends State<MedisyncApp> {
     return ChangeNotifierProvider.value(
       value: widget.appState,
       child: MaterialApp(
-        title: 'Siyaphila',
+        title: 'Medisync',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.light(),
         home: ValueListenableBuilder<_AuthStatus>(

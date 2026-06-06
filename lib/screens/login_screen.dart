@@ -96,7 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         const SizedBox(height: 6),
         Text(
-          'Sign in to your Siyaphila account',
+          'Sign in to your Medisync account',
           style: TextStyle(color: AppTheme.ink60, fontSize: 15),
         ),
       ],

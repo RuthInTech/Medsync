@@ -6,6 +6,7 @@ import '../models/enums.dart';
 import '../models/patient.dart';
 import '../main.dart';
 import '../services/app_state.dart';
+import '../services/auth_service.dart';
 import '../theme.dart';
 
 class SettingsTab extends StatelessWidget {
@@ -91,7 +92,7 @@ class SettingsTab extends StatelessWidget {
                       color: AppTheme.primary, size: 18),
                   onTap: () async {
                     await app.notifications.showNow(
-                      'Siyaphila',
+                      'Medisync',
                       'Time for your medication',
                     );
                     if (!context.mounted) return;
@@ -144,25 +145,6 @@ class SettingsTab extends StatelessWidget {
                         width: 38,
                         height: 38,
                         decoration: BoxDecoration(
-                          color: const Color(0xFFFEF3C7),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: const Icon(Icons.restart_alt,
-                            color: Color(0xFF92400E), size: 20),
-                      ),
-                      title: const Text('Reset demo data',
-                          style: TextStyle(
-                              fontWeight: FontWeight.w600, fontSize: 14)),
-                      onTap: () => _confirmReset(context, app),
-                    ),
-                    const Divider(height: 1, indent: 16, endIndent: 16),
-                    ListTile(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16)),
-                      leading: Container(
-                        width: 38,
-                        height: 38,
-                        decoration: BoxDecoration(
                           color: AppTheme.error.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -183,31 +165,6 @@ class SettingsTab extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-
-  void _confirmReset(BuildContext context, AppState app) {
-    showDialog<void>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Reset demo data?'),
-        content: const Text(
-            'This clears the patient profile and all dose history on this device.'),
-        actions: [
-          TextButton(
-              onPressed: () => Navigator.of(ctx).pop(),
-              child: const Text('Cancel')),
-          FilledButton(
-            onPressed: () async {
-              await app.reset();
-              if (!ctx.mounted) return;
-              Navigator.of(ctx).pop();
-            },
-            style: FilledButton.styleFrom(backgroundColor: AppTheme.error),
-            child: const Text('Reset'),
-          ),
-        ],
-      ),
     );
   }
 
@@ -302,6 +259,123 @@ class _SectionLabel extends StatelessWidget {
           fontSize: 13,
           color: AppTheme.ink60,
           letterSpacing: 0.4),
+    );
+  }
+}
+
+// ── Clinician settings ────────────────────────────────────────────────────────
+
+class ClinicianSettingsTab extends StatefulWidget {
+  const ClinicianSettingsTab({super.key});
+
+  @override
+  State<ClinicianSettingsTab> createState() => _ClinicianSettingsTabState();
+}
+
+class _ClinicianSettingsTabState extends State<ClinicianSettingsTab> {
+  String _name = '';
+
+  @override
+  void initState() {
+    super.initState();
+    AuthService().getName().then((n) {
+      if (mounted) setState(() => _name = n ?? 'Clinician');
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        _buildHeader(),
+        Expanded(
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(16, 20, 16, 28),
+            children: [
+              _SectionLabel('Account'),
+              const SizedBox(height: 8),
+              Container(
+                decoration: BoxDecoration(
+                  color: AppTheme.surface,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: AppTheme.cardShadow,
+                ),
+                child: ListTile(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  leading: Container(
+                    width: 38,
+                    height: 38,
+                    decoration: BoxDecoration(
+                      color: AppTheme.error.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Icon(Icons.logout_outlined, color: AppTheme.error, size: 20),
+                  ),
+                  title: const Text('Sign out',
+                      style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14, color: AppTheme.error)),
+                  onTap: () => _confirmLogout(context),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildHeader() {
+    return Container(
+      decoration: const BoxDecoration(gradient: AppTheme.brandGradient),
+      child: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+          child: Row(
+            children: [
+              CircleAvatar(
+                radius: 24,
+                backgroundColor: Colors.white.withValues(alpha: 0.25),
+                child: Text(
+                  _name.isNotEmpty ? _name.characters.first.toUpperCase() : 'C',
+                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 18),
+                ),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(_name,
+                        style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w700)),
+                    const Text('Clinician', style: TextStyle(color: Colors.white70, fontSize: 12.5)),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _confirmLogout(BuildContext context) {
+    showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Sign out?'),
+        content: const Text('You will be returned to the login screen.'),
+        actions: [
+          TextButton(onPressed: () => Navigator.of(ctx).pop(), child: const Text('Cancel')),
+          FilledButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              MedisyncApp.of(context).onLogout();
+            },
+            style: FilledButton.styleFrom(backgroundColor: AppTheme.error),
+            child: const Text('Sign out'),
+          ),
+        ],
+      ),
     );
   }
 }

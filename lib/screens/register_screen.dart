@@ -101,7 +101,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ),
         const SizedBox(height: 6),
         Text(
-          'Join Siyaphila and take control of your health',
+          'Join Medisync and take control of your health',
           style: TextStyle(color: AppTheme.ink60, fontSize: 15),
         ),
       ],

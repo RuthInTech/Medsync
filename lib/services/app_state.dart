@@ -119,6 +119,16 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> addMedication(Medication medication) async {
+    if (_patient == null) return;
+    _patient!.medications.add(medication);
+    _ensureTodaysDoses();
+    _recomputeStatuses();
+    await _persist();
+    await _scheduleReminders();
+    notifyListeners();
+  }
+
   Future<void> reset() async {
     await _notifications.cancelAll();
     await _storage.clear();

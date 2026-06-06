@@ -9,6 +9,7 @@ import '../theme.dart';
 import '../widgets/dose_card.dart';
 import '../widgets/risk_badge.dart';
 import '../widgets/streak_banner.dart';
+import 'add_medication_screen.dart';
 import 'proof_of_dose_sheet.dart';
 import 'risk_detail_screen.dart';
 
@@ -26,7 +27,18 @@ class HomeTab extends StatelessWidget {
             d.status == DoseStatus.due || d.status == DoseStatus.upcoming)
         .toList();
 
-    return Column(
+    return Scaffold(
+      backgroundColor: AppTheme.background,
+      floatingActionButton: patient.medications.isNotEmpty
+          ? FloatingActionButton(
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const AddMedicationScreen()),
+              ),
+              backgroundColor: AppTheme.primary,
+              child: const Icon(Icons.add, color: Colors.white),
+            )
+          : null,
+      body: Column(
       children: [
         _GradientHeader(patient: patient, pending: pending, l: l),
         Expanded(
@@ -54,7 +66,9 @@ class HomeTab extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 10),
-              if (doses.isEmpty)
+              if (app.patient!.medications.isEmpty)
+                _noMedicationsState(context)
+              else if (doses.isEmpty)
                 _emptyState(l.t('noDosesToday'))
               else ...[
                 if (pending.isEmpty)
@@ -65,6 +79,7 @@ class HomeTab extends StatelessWidget {
           ),
         ),
       ],
+      ),
     );
   }
 
@@ -96,6 +111,48 @@ class HomeTab extends StatelessWidget {
       ),
     );
   }
+
+  Widget _noMedicationsState(BuildContext context) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 32),
+        child: Column(
+          children: [
+            Container(
+              width: 72,
+              height: 72,
+              decoration: BoxDecoration(
+                color: AppTheme.primary.withValues(alpha: 0.08),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.medication_outlined, color: AppTheme.primary, size: 36),
+            ),
+            const SizedBox(height: 16),
+            const Text('No medications yet',
+                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 17)),
+            const SizedBox(height: 6),
+            Text('Add your first medication to start tracking doses.',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: AppTheme.ink60, fontSize: 14, height: 1.4)),
+            const SizedBox(height: 20),
+            FilledButton.icon(
+              onPressed: () async {
+                final added = await Navigator.of(context).push<bool>(
+                  MaterialPageRoute(builder: (_) => const AddMedicationScreen()),
+                );
+                if (added == true && context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Medication added!'),
+                      backgroundColor: AppTheme.secondary,
+                    ),
+                  );
+                }
+              },
+              icon: const Icon(Icons.add, size: 18),
+              label: const Text('Add medication'),
+            ),
+          ],
+        ),
+      );
 
   Widget _emptyState(String text) => Padding(
         padding: const EdgeInsets.symmetric(vertical: 32),

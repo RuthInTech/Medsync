@@ -1,4 +1,3 @@
-import json
 from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
@@ -29,7 +28,7 @@ def get_roster(
     result = []
 
     for p in patients:
-        conditions = json.loads(p.conditions or "[]")
+        conditions = p.conditions or []
         med_ids = [m.id for m in p.medications]
         events = db.query(models.DoseEvent).filter(
             models.DoseEvent.medication_id.in_(med_ids),
