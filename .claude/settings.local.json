@@ -14,7 +14,9 @@
       "Bash(sed -i 's/content=\"medisync\"/content=\"Medisync\"/; s/<title>medisync<\\\\/title>/<title>Medisync<\\\\/title>/; s/content=\"A new Flutter project.\"/content=\"AI-powered chronic care adherence platform.\"/' web/index.html)",
       "Bash(flutter --version)",
       "Bash(dmesg)",
-      "Bash(journalctl -k --since \"30 min ago\")"
+      "Bash(journalctl -k --since \"30 min ago\")",
+      "Bash(flutter pub *)",
+      "Bash(docker build *)"
     ]
   }
 }

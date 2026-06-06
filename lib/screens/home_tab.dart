@@ -12,8 +12,6 @@ import '../widgets/streak_banner.dart';
 import 'proof_of_dose_sheet.dart';
 import 'risk_detail_screen.dart';
 
-/// The patient's daily home: gamification hero, risk summary, condition chips,
-/// and today's dose list with Proof-of-Dose actions.
 class HomeTab extends StatelessWidget {
   const HomeTab({super.key});
 
@@ -28,64 +26,45 @@ class HomeTab extends StatelessWidget {
             d.status == DoseStatus.due || d.status == DoseStatus.upcoming)
         .toList();
 
-    return SafeArea(
-      child: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 28),
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Column(
+      children: [
+        _GradientHeader(patient: patient, pending: pending, l: l),
+        Expanded(
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(16, 20, 16, 28),
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              StreakBanner(stats: app.stats, language: patient.language),
+              const SizedBox(height: 14),
+              _RiskSummaryCard(),
+              const SizedBox(height: 20),
+              _ConditionStrip(),
+              const SizedBox(height: 20),
+              Row(
                 children: [
-                  Text(_greeting(patient.name),
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineSmall
-                          ?.copyWith(fontWeight: FontWeight.w700)),
-                  Text(l.t('tagline'),
-                      style: TextStyle(color: Colors.grey.shade600)),
+                  Text(l.t('today'),
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w700, fontSize: 17)),
+                  const Spacer(),
+                  if (doses.isNotEmpty)
+                    Text(
+                      '${doses.where((d) => d.status == DoseStatus.taken || d.status == DoseStatus.late).length}/${doses.length} done',
+                      style: const TextStyle(
+                          color: AppTheme.ink60, fontSize: 13),
+                    ),
                 ],
               ),
-              CircleAvatar(
-                radius: 22,
-                backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-                child: Text(_initials(patient.name),
-                    style: const TextStyle(fontWeight: FontWeight.w700)),
-              ),
+              const SizedBox(height: 10),
+              if (doses.isEmpty)
+                _emptyState(l.t('noDosesToday'))
+              else ...[
+                if (pending.isEmpty)
+                  _allDoneBanner(l.t('allDone')),
+                for (final d in doses) _doseRow(context, app, d),
+              ],
             ],
           ),
-          const SizedBox(height: 18),
-          StreakBanner(stats: app.stats, language: patient.language),
-          const SizedBox(height: 14),
-          _RiskSummaryCard(),
-          const SizedBox(height: 18),
-          _ConditionStrip(),
-          const SizedBox(height: 18),
-          Text(l.t('today'),
-              style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 18)),
-          const SizedBox(height: 4),
-          if (doses.isEmpty)
-            _emptyState(l.t('noDosesToday'))
-          else ...[
-            if (pending.isEmpty)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                child: Row(
-                  children: [
-                    const Icon(Icons.celebration, color: Color(0xFF2A9D8F)),
-                    const SizedBox(width: 8),
-                    Text(l.t('allDone'),
-                        style: const TextStyle(
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xFF2A9D8F))),
-                  ],
-                ),
-              ),
-            for (final d in doses) _doseRow(context, app, d),
-          ],
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -110,7 +89,7 @@ class HomeTab extends StatelessWidget {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(l.t('doseConfirmed')),
-              backgroundColor: const Color(0xFF2A9D8F),
+              backgroundColor: AppTheme.secondary,
             ),
           );
         },
@@ -119,12 +98,107 @@ class HomeTab extends StatelessWidget {
   }
 
   Widget _emptyState(String text) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 28),
+        padding: const EdgeInsets.symmetric(vertical: 32),
         child: Center(
-            child: Text(text, style: TextStyle(color: Colors.grey.shade600))),
+          child: Column(
+            children: [
+              Icon(Icons.check_circle_outline,
+                  color: AppTheme.ink60.withValues(alpha: 0.4), size: 48),
+              const SizedBox(height: 12),
+              Text(text,
+                  style: const TextStyle(color: AppTheme.ink60, fontSize: 15)),
+            ],
+          ),
+        ),
       );
 
-  String _greeting(String name) => 'Hi, ${name.split(' ').first} 👋';
+  Widget _allDoneBanner(String text) => Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: AppTheme.secondary.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppTheme.secondary.withValues(alpha: 0.25)),
+        ),
+        child: Row(
+          children: [
+            const Icon(Icons.celebration_outlined,
+                color: AppTheme.secondary, size: 20),
+            const SizedBox(width: 10),
+            Text(text,
+                style: const TextStyle(
+                    fontWeight: FontWeight.w600, color: AppTheme.secondary)),
+          ],
+        ),
+      );
+}
+
+class _GradientHeader extends StatelessWidget {
+  const _GradientHeader({
+    required this.patient,
+    required this.pending,
+    required this.l,
+  });
+
+  final dynamic patient;
+  final List pending;
+  final AppLocalizations l;
+
+  @override
+  Widget build(BuildContext context) {
+    final firstName = patient.name.split(' ').first as String;
+    final initials = _initials(patient.name as String);
+
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: AppTheme.brandGradient,
+      ),
+      child: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Hi, $firstName',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      pending.isEmpty
+                          ? 'All done for today!'
+                          : '${pending.length} dose${pending.length == 1 ? '' : 's'} remaining',
+                      style: const TextStyle(
+                          color: Colors.white70, fontSize: 14),
+                    ),
+                  ],
+                ),
+              ),
+              CircleAvatar(
+                radius: 24,
+                backgroundColor: Colors.white.withValues(alpha: 0.2),
+                child: Text(
+                  initials,
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 16),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
   String _initials(String name) {
     final parts = name.trim().split(' ');
@@ -140,43 +214,53 @@ class _RiskSummaryCard extends StatelessWidget {
     final app = context.watch<AppState>();
     final risk = app.risk;
     final l = AppLocalizations(app.patient!.language);
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: AppTheme.softShadow,
-      ),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(20),
-        onTap: () => Navigator.of(context).push(MaterialPageRoute(
-            builder: (_) => const RiskDetailScreen())),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            children: [
-              Icon(Icons.insights, color: risk.tier.color),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(l.t('riskTitle'),
-                        style: const TextStyle(fontWeight: FontWeight.w700)),
-                    const SizedBox(height: 2),
-                    Text(
-                      risk.factors.first.label,
-                      style: TextStyle(
-                          color: Colors.grey.shade600, fontSize: 13),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
+    return GestureDetector(
+      onTap: () => Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => const RiskDetailScreen())),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppTheme.surface,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: AppTheme.cardShadow,
+          border: const Border.fromBorderSide(
+              BorderSide(color: Color(0xFFF1F5F9))),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 42,
+              height: 42,
+              decoration: BoxDecoration(
+                color: risk.tier.color.withValues(alpha: 0.10),
+                borderRadius: BorderRadius.circular(10),
               ),
-              RiskBadge(tier: risk.tier, score: risk.score),
-              const Icon(Icons.chevron_right, color: Colors.grey),
-            ],
-          ),
+              child: Icon(Icons.insights_outlined, color: risk.tier.color, size: 20),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(l.t('riskTitle'),
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w700, fontSize: 14)),
+                  const SizedBox(height: 3),
+                  Text(
+                    risk.factors.isNotEmpty ? risk.factors.first.label : '',
+                    style: const TextStyle(
+                        color: AppTheme.ink60, fontSize: 12.5),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            RiskBadge(tier: risk.tier, score: risk.score),
+            const SizedBox(width: 4),
+            const Icon(Icons.chevron_right, color: AppTheme.ink60, size: 20),
+          ],
         ),
       ),
     );
@@ -188,52 +272,64 @@ class _ConditionStrip extends StatelessWidget {
   Widget build(BuildContext context) {
     final app = context.watch<AppState>();
     final conditions = app.patient!.conditions;
-    return SizedBox(
-      height: 124,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: conditions.length,
-        separatorBuilder: (_, _) => const SizedBox(width: 10),
-        itemBuilder: (context, i) {
-          final c = conditions[i];
-          final count = app.patient!.medicationsFor(c).length;
-          return Container(
-            width: 124,
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(18),
-              boxShadow: AppTheme.softShadow,
-              border: Border.all(color: c.color.withValues(alpha: 0.18)),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  width: 36,
-                  height: 36,
-                  decoration: BoxDecoration(
-                    color: c.color.withValues(alpha: 0.14),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Icon(c.icon, color: c.color, size: 20),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('My conditions',
+            style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15)),
+        const SizedBox(height: 10),
+        SizedBox(
+          height: 112,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: conditions.length,
+            separatorBuilder: (_, _) => const SizedBox(width: 10),
+            itemBuilder: (context, i) {
+              final c = conditions[i];
+              final count = app.patient!.medicationsFor(c).length;
+              return Container(
+                width: 116,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: AppTheme.surface,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: AppTheme.cardShadow,
+                  border: Border.all(
+                      color: c.color.withValues(alpha: 0.15), width: 1),
                 ),
-                Text(c.label,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.w600, fontSize: 13)),
-                Text('$count med${count == 1 ? '' : 's'}',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style:
-                        TextStyle(color: Colors.grey.shade600, fontSize: 12)),
-              ],
-            ),
-          );
-        },
-      ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      width: 34,
+                      height: 34,
+                      decoration: BoxDecoration(
+                        color: c.color.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(9),
+                      ),
+                      child: Icon(c.icon, color: c.color, size: 18),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(c.label,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                                fontWeight: FontWeight.w600, fontSize: 12.5)),
+                        Text('$count med${count == 1 ? '' : 's'}',
+                            style: const TextStyle(
+                                color: AppTheme.ink60, fontSize: 11)),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }

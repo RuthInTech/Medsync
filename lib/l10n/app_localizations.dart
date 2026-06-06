@@ -58,6 +58,10 @@ class AppLocalizations {
       'welcomeBody':
           'One app for all your treatments. Track every dose, build streaks, and stay ahead of your health.',
       'minRead': 'min read',
+      'fullName': 'Full name',
+      'exploreDemo': 'Explore with demo data',
+      'logout': 'Sign out',
+      'logoutConfirm': 'Are you sure you want to sign out?',
     },
     'am': {
       'appName': 'Medisync',
@@ -94,6 +98,10 @@ class AppLocalizations {
       'welcomeBody':
           'ለሁሉም ሕክምናዎችዎ አንድ መተግበሪያ። እያንዳንዱን መድኃኒት ይከታተሉ፣ ተከታታይ ቀናትን ይገንቡ፣ እና ከጤናዎ ቀድመው ይራመዱ።',
       'minRead': 'ደቂቃ ንባብ',
+      'fullName': 'ሙሉ ስም',
+      'exploreDemo': 'ናሙና ዳታ ጋር ሞክሩ',
+      'logout': 'ዘግቶ ውጣ',
+      'logoutConfirm': 'እርግጠኛ ነዎት ዘግቶ መውጣት ይፈልጋሉ?',
     },
   };
 }

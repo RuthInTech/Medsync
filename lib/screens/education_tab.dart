@@ -5,9 +5,8 @@ import '../data/education_content.dart';
 import '../l10n/app_localizations.dart';
 import '../models/education_module.dart';
 import '../services/app_state.dart';
+import '../theme.dart';
 
-/// Localized educational modules for the patient's conditions, with read state
-/// feeding back into engagement tracking.
 class EducationTab extends StatelessWidget {
   const EducationTab({super.key});
 
@@ -17,30 +16,80 @@ class EducationTab extends StatelessWidget {
     final patient = app.patient!;
     final l = AppLocalizations(patient.language);
     final modules = EducationContent.forConditions(patient.conditions);
+    final readCount = modules.where((m) => patient.readModuleIds.contains(m.id)).length;
 
-    return SafeArea(
-      child: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 28),
-        children: [
-          Text(l.t('learn'),
-              style: Theme.of(context)
-                  .textTheme
-                  .headlineSmall
-                  ?.copyWith(fontWeight: FontWeight.w700)),
-          const SizedBox(height: 4),
-          Text(patient.language.label,
-              style: TextStyle(color: Colors.grey.shade600)),
-          const SizedBox(height: 14),
-          for (final m in modules) ...[
-            _ModuleCard(
-              module: m,
-              language: patient.language,
-              read: patient.readModuleIds.contains(m.id),
-              minReadLabel: l.t('minRead'),
-            ),
-            const SizedBox(height: 12),
-          ],
-        ],
+    return Column(
+      children: [
+        _EducationHeader(readCount: readCount, total: modules.length),
+        Expanded(
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(16, 20, 16, 28),
+            children: [
+              for (final m in modules) ...[
+                _ModuleCard(
+                  module: m,
+                  language: patient.language,
+                  read: patient.readModuleIds.contains(m.id),
+                  minReadLabel: l.t('minRead'),
+                ),
+                const SizedBox(height: 10),
+              ],
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _EducationHeader extends StatelessWidget {
+  const _EducationHeader({required this.readCount, required this.total});
+  final int readCount;
+  final int total;
+
+  @override
+  Widget build(BuildContext context) {
+    final app = context.watch<AppState>();
+    final l = AppLocalizations(app.language);
+    return Container(
+      decoration: const BoxDecoration(gradient: AppTheme.brandGradient),
+      child: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(l.t('learn'),
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 22,
+                      fontWeight: FontWeight.w800)),
+              const SizedBox(height: 6),
+              Row(
+                children: [
+                  Text(
+                    '$readCount of $total articles read',
+                    style: const TextStyle(color: Colors.white70, fontSize: 14),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: LinearProgressIndicator(
+                        value: total > 0 ? readCount / total : 0,
+                        backgroundColor: Colors.white24,
+                        valueColor:
+                            const AlwaysStoppedAnimation(Colors.white),
+                        minHeight: 5,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -62,46 +111,84 @@ class _ModuleCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final title = EducationContent.text(module.titleKey, language);
-    return Card(
-      child: InkWell(
-        borderRadius: BorderRadius.circular(18),
-        onTap: () => Navigator.of(context).push(MaterialPageRoute(
-            builder: (_) => _ModuleReader(module: module, language: language))),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            children: [
-              Container(
-                width: 46,
-                height: 46,
-                decoration: BoxDecoration(
-                  color: module.condition.color.withValues(alpha: 0.14),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(module.condition.icon,
-                    color: module.condition.color),
+    return GestureDetector(
+      onTap: () => Navigator.of(context).push(MaterialPageRoute(
+          builder: (_) => _ModuleReader(module: module, language: language))),
+      child: Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: AppTheme.surface,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: AppTheme.cardShadow,
+          border: read
+              ? Border.all(
+                  color: AppTheme.secondary.withValues(alpha: 0.3))
+              : Border.all(color: const Color(0xFFF1F5F9)),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 46,
+              height: 46,
+              decoration: BoxDecoration(
+                color: module.condition.color.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(12),
               ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(title,
+              child: Icon(module.condition.icon,
+                  color: module.condition.color, size: 22),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w700, fontSize: 14)),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: module.condition.color.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          module.condition.label,
+                          style: TextStyle(
+                              color: module.condition.color,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        '${module.readMinutes} $minReadLabel',
                         style: const TextStyle(
-                            fontWeight: FontWeight.w700, fontSize: 15)),
-                    const SizedBox(height: 4),
-                    Text('${module.condition.label} · ${module.readMinutes} $minReadLabel',
-                        style: TextStyle(
-                            color: Colors.grey.shade600, fontSize: 12.5)),
-                  ],
-                ),
+                            color: AppTheme.ink60, fontSize: 11.5),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-              if (read)
-                const Icon(Icons.check_circle, color: Color(0xFF2A9D8F))
-              else
-                const Icon(Icons.chevron_right, color: Colors.grey),
-            ],
-          ),
+            ),
+            const SizedBox(width: 8),
+            if (read)
+              Container(
+                width: 28,
+                height: 28,
+                decoration: BoxDecoration(
+                  color: AppTheme.secondary.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.check,
+                    color: AppTheme.secondary, size: 16),
+              )
+            else
+              const Icon(Icons.chevron_right, color: AppTheme.ink60),
+          ],
         ),
       ),
     );
@@ -123,18 +210,39 @@ class _ModuleReader extends StatelessWidget {
     final read = app.patient!.readModuleIds.contains(module.id);
 
     return Scaffold(
-      appBar: AppBar(title: Text(module.condition.label)),
+      appBar: AppBar(
+        backgroundColor: AppTheme.primary,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new, size: 18),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Text(module.condition.label),
+      ),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 28),
         children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            decoration: BoxDecoration(
+              color: module.condition.color.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text(
+              module.condition.label,
+              style: TextStyle(
+                  color: module.condition.color,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12.5),
+            ),
+          ),
+          const SizedBox(height: 12),
           Text(title,
-              style: Theme.of(context)
-                  .textTheme
-                  .headlineSmall
-                  ?.copyWith(fontWeight: FontWeight.w800)),
+              style: const TextStyle(
+                  fontSize: 22, fontWeight: FontWeight.w800, height: 1.2)),
           const SizedBox(height: 16),
           Text(body,
-              style: const TextStyle(fontSize: 16, height: 1.5)),
+              style: const TextStyle(
+                  fontSize: 15.5, height: 1.6, color: AppTheme.ink)),
           const SizedBox(height: 28),
           FilledButton.icon(
             onPressed: () async {
@@ -142,8 +250,12 @@ class _ModuleReader extends StatelessWidget {
               if (!context.mounted) return;
               Navigator.of(context).pop();
             },
-            icon: Icon(read ? Icons.check : Icons.done_all),
+            icon: Icon(read ? Icons.check_circle : Icons.done_all, size: 18),
             label: Text(read ? l.t('readAgain') : l.t('markRead')),
+            style: FilledButton.styleFrom(
+              backgroundColor:
+                  read ? AppTheme.secondary : AppTheme.primary,
+            ),
           ),
         ],
       ),

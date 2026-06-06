@@ -7,20 +7,16 @@ import '../models/enums.dart';
 import '../models/risk_assessment.dart';
 import '../services/app_state.dart';
 import '../services/risk_engine.dart';
+import '../theme.dart';
 import '../widgets/risk_badge.dart';
 
-/// Clinician-facing view: the provider's panel of patients, with high-risk
-/// patients automatically flagged at the top for proactive outreach.
-///
-/// Each roster patient's risk is computed by the *same* [RiskEngine] the patient
-/// app uses — the flag a clinician sees is the flag the model produced.
 class ClinicianTab extends StatelessWidget {
   const ClinicianTab({super.key});
 
   @override
   Widget build(BuildContext context) {
     final app = context.watch<AppState>();
-    final l = AppLocalizations(app.patient!.language);
+    final l = AppLocalizations(app.language);
     const engine = RiskEngine();
 
     final assessed = SeedData.clinicRoster()
@@ -31,94 +27,146 @@ class ClinicianTab extends StatelessWidget {
     final flagged =
         assessed.where((e) => e.risk.tier == RiskTier.high).toList();
 
-    return SafeArea(
-      child: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 28),
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Column(
+      children: [
+        _ClinicianHeader(flaggedCount: flagged.length),
+        Expanded(
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(16, 20, 16, 28),
             children: [
-              Text(l.t('clinic'),
-                  style: Theme.of(context)
-                      .textTheme
-                      .headlineSmall
-                      ?.copyWith(fontWeight: FontWeight.w700)),
-              Chip(
-                avatar: const Icon(Icons.medical_services_outlined, size: 18),
-                label: const Text('Dr. demo'),
-                backgroundColor: Theme.of(context).colorScheme.surface,
+              if (flagged.isNotEmpty) ...[
+                _SectionHeader(
+                  label: l.t('flaggedPatients'),
+                  count: flagged.length,
+                  countColor: AppTheme.error,
+                ),
+                const SizedBox(height: 10),
+                for (final e in flagged)
+                  _PatientCard(
+                    name: e.patient.name,
+                    age: e.patient.age,
+                    conditions: e.patient.conditions,
+                    risk: e.risk,
+                    highlighted: true,
+                  ),
+                const SizedBox(height: 20),
+              ],
+              _SectionHeader(
+                label: l.t('allPatients'),
+                count: assessed.length,
               ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          _flaggedHeader(context, flagged.length, l),
-          const SizedBox(height: 12),
-          if (flagged.isNotEmpty) ...[
-            Text(l.t('flaggedPatients'),
-                style: const TextStyle(
-                    fontWeight: FontWeight.w700, fontSize: 16)),
-            const SizedBox(height: 8),
-            for (final e in flagged)
-              _PatientRow(
+              const SizedBox(height: 10),
+              for (final e in assessed)
+                _PatientCard(
                   name: e.patient.name,
                   age: e.patient.age,
                   conditions: e.patient.conditions,
                   risk: e.risk,
-                  highlighted: true),
-            const SizedBox(height: 18),
-          ],
-          Text(l.t('allPatients'),
-              style:
-                  const TextStyle(fontWeight: FontWeight.w700, fontSize: 16)),
-          const SizedBox(height: 8),
-          for (final e in assessed)
-            _PatientRow(
-                name: e.patient.name,
-                age: e.patient.age,
-                conditions: e.patient.conditions,
-                risk: e.risk,
-                highlighted: false),
-        ],
-      ),
+                  highlighted: false,
+                ),
+            ],
+          ),
+        ),
+      ],
     );
   }
+}
 
-  Widget _flaggedHeader(
-      BuildContext context, int count, AppLocalizations l) {
+class _ClinicianHeader extends StatelessWidget {
+  const _ClinicianHeader({required this.flaggedCount});
+  final int flaggedCount;
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        gradient: const LinearGradient(
-            colors: [Color(0xFFD7263D), Color(0xFFA61B2B)]),
-      ),
-      child: Row(
-        children: [
-          const Icon(Icons.warning_amber_rounded,
-              color: Colors.white, size: 30),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('$count patient${count == 1 ? '' : 's'} need attention',
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 16)),
-                const Text('Behavioral patterns suggest imminent non-adherence',
-                    style: TextStyle(color: Colors.white70, fontSize: 12.5)),
-              ],
-            ),
+      decoration: const BoxDecoration(gradient: AppTheme.brandGradient),
+      child: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Clinic Dashboard',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 22,
+                            fontWeight: FontWeight.w800)),
+                    const SizedBox(height: 4),
+                    Text(
+                      flaggedCount > 0
+                          ? '$flaggedCount patient${flaggedCount == 1 ? '' : 's'} need attention'
+                          : 'All patients in good standing',
+                      style: const TextStyle(color: Colors.white70, fontSize: 14),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Row(
+                  children: [
+                    Icon(Icons.local_hospital_outlined,
+                        color: Colors.white, size: 16),
+                    SizedBox(width: 6),
+                    Text('Dr. Demo',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600)),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 }
 
-class _PatientRow extends StatelessWidget {
-  const _PatientRow({
+class _SectionHeader extends StatelessWidget {
+  const _SectionHeader({required this.label, required this.count, this.countColor});
+  final String label;
+  final int count;
+  final Color? countColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Text(label,
+            style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16)),
+        const SizedBox(width: 8),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+          decoration: BoxDecoration(
+            color: (countColor ?? AppTheme.primary).withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Text(
+            '$count',
+            style: TextStyle(
+              color: countColor ?? AppTheme.primary,
+              fontWeight: FontWeight.w700,
+              fontSize: 12,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _PatientCard extends StatelessWidget {
+  const _PatientCard({
     required this.name,
     required this.age,
     required this.conditions,
@@ -134,65 +182,83 @@ class _PatientRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final borderColor = highlighted
+        ? AppTheme.error.withValues(alpha: 0.3)
+        : const Color(0xFFF1F5F9);
+
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppTheme.surface,
         borderRadius: BorderRadius.circular(16),
-        border: highlighted
-            ? Border.all(color: risk.tier.color.withValues(alpha: 0.6))
-            : Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: borderColor, width: highlighted ? 1.5 : 1),
+        boxShadow: AppTheme.cardShadow,
       ),
       child: ExpansionTile(
         shape: const Border(),
         collapsedShape: const Border(),
+        tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
         leading: CircleAvatar(
-          backgroundColor: risk.tier.color.withValues(alpha: 0.15),
-          child: Text('$age',
-              style: TextStyle(
-                  color: risk.tier.color, fontWeight: FontWeight.w700)),
+          radius: 20,
+          backgroundColor: risk.tier.color.withValues(alpha: 0.12),
+          child: Text(
+            name.characters.first.toUpperCase(),
+            style: TextStyle(
+                color: risk.tier.color,
+                fontWeight: FontWeight.w800,
+                fontSize: 16),
+          ),
         ),
         title: Text(name,
-            style: const TextStyle(fontWeight: FontWeight.w700)),
-        subtitle: Text(conditions.map((c) => c.label).join(' · '),
-            style: const TextStyle(fontSize: 12.5)),
+            style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14)),
+        subtitle: Text(
+          '${age}y · ${conditions.map((c) => c.label).join(' · ')}',
+          style: const TextStyle(fontSize: 12, color: AppTheme.ink60),
+        ),
         trailing: RiskBadge(tier: risk.tier, score: risk.score),
-        childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
         children: [
+          const Divider(height: 16),
           for (final f in risk.factors)
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 3),
+              padding: const EdgeInsets.symmetric(vertical: 4),
               child: Row(
                 children: [
                   Icon(
                     f.weight > 0
                         ? Icons.trending_up
-                        : (f.weight < 0
+                        : f.weight < 0
                             ? Icons.trending_down
-                            : Icons.remove),
-                    size: 16,
-                    color: f.weight > 0
-                        ? const Color(0xFFD7263D)
-                        : Colors.grey,
+                            : Icons.remove,
+                    size: 15,
+                    color: f.weight > 0 ? AppTheme.error : AppTheme.secondary,
                   ),
                   const SizedBox(width: 8),
                   Expanded(
-                      child: Text(f.label,
-                          style: const TextStyle(fontSize: 13))),
+                    child: Text(f.label,
+                        style: const TextStyle(fontSize: 12.5)),
+                  ),
                 ],
               ),
             ),
           if (highlighted) ...[
-            const SizedBox(height: 8),
+            const SizedBox(height: 10),
             SizedBox(
               width: double.infinity,
-              child: OutlinedButton.icon(
+              child: FilledButton.icon(
                 onPressed: () {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text('Outreach logged for $name')));
+                    content: Text('Outreach logged for $name'),
+                    backgroundColor: AppTheme.secondary,
+                  ));
                 },
-                icon: const Icon(Icons.phone_outlined),
-                label: const Text('Schedule outreach'),
+                style: FilledButton.styleFrom(
+                  backgroundColor: AppTheme.error,
+                  minimumSize: const Size.fromHeight(40),
+                ),
+                icon: const Icon(Icons.phone_outlined, size: 16),
+                label: const Text('Schedule outreach',
+                    style: TextStyle(fontSize: 13)),
               ),
             ),
           ],

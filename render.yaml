@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: siyaphila-api
+    env: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free          # upgrade to starter for persistent disk support
+    healthCheckPath: /health
+
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true          # Render auto-generates a secure random value
+      - key: DATABASE_URL
+        value: sqlite:////data/siyaphila.db   # 4 slashes = absolute path on disk
+      - key: PORT
+        value: 10000
+
+    # Uncomment to add a 1 GB persistent disk (requires paid plan on Render)
+    # disk:
+    #   name: siyaphila-data
+    #   mountPath: /data
+    #   sizeGB: 1
