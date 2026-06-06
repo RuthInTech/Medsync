@@ -1,4 +1,4 @@
-/// Core enumerations shared across the Siyaphila domain model.
+/// Core enumerations shared across the Medisync domain model.
 library;
 
 import 'package:flutter/material.dart';
@@ -159,9 +159,7 @@ enum RiskTier {
 /// Supported in-app languages (drives content localization).
 enum AppLanguage {
   english('en', 'English'),
-  zulu('zu', 'isiZulu'),
-  xhosa('xh', 'isiXhosa'),
-  afrikaans('af', 'Afrikaans');
+  amharic('am', 'አማርኛ');
 
   const AppLanguage(this.code, this.label);
   final String code;

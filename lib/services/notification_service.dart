@@ -12,7 +12,7 @@ import '../models/medication.dart';
 /// at the prescribed time even with the app closed and no connectivity. The
 /// service degrades gracefully: on platforms without plugin support (or when
 /// initialization fails) it no-ops instead of crashing the app, so the rest of
-/// Siyaphila keeps working.
+/// Medisync keeps working.
 class NotificationService {
   final FlutterLocalNotificationsPlugin _plugin =
       FlutterLocalNotificationsPlugin();
@@ -20,7 +20,7 @@ class NotificationService {
   bool _available = false;
   bool get isAvailable => _available;
 
-  static const _channelId = 'siyaphila_doses';
+  static const _channelId = 'medisync_doses';
   static const _channelName = 'Medication reminders';
   static const _channelDescription = 'On-time medication reminders';
 
@@ -132,7 +132,7 @@ class NotificationService {
         await _plugin.zonedSchedule(
           id: _reminderId(med.id, t.hour, t.minute),
           scheduledDate: _nextInstanceOf(t.hour, t.minute),
-          title: 'Siyaphila · ${med.name}',
+          title: 'Medisync · ${med.name}',
           body: 'Time for your ${med.dosageAmount} 💊',
           notificationDetails: _details(),
           androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,

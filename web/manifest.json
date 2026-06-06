@@ -1,6 +1,6 @@
 {
-    "name": "medisync",
-    "short_name": "medisync",
+    "name": "Medisync",
+    "short_name": "Medisync",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

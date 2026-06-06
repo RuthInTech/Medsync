@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Siyaphila visual identity — a calm, trustworthy teal/indigo palette tuned
+/// Medisync visual identity — a calm, trustworthy teal/indigo palette tuned
 /// for accessibility (high contrast, large tap targets) and a soft, modern
 /// surface treatment (rounded cards, gentle shadows, generous spacing).
 class AppTheme {

@@ -19,11 +19,11 @@ Future<void> main() async {
   await appState.load();
   await notifications.requestPermissions();
 
-  runApp(SiyaphilaApp(appState: appState));
+  runApp(MedisyncApp(appState: appState));
 }
 
-class SiyaphilaApp extends StatelessWidget {
-  const SiyaphilaApp({super.key, required this.appState});
+class MedisyncApp extends StatelessWidget {
+  const MedisyncApp({super.key, required this.appState});
 
   final AppState appState;
 
@@ -32,7 +32,7 @@ class SiyaphilaApp extends StatelessWidget {
     return ChangeNotifierProvider.value(
       value: appState,
       child: MaterialApp(
-        title: 'Siyaphila',
+        title: 'Medisync',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.light(),
         home: const _Root(),

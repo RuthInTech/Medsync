@@ -71,56 +71,22 @@ class EducationContent {
       'chol_why_body':
           'Cholesterol medicine lowers the fatty buildup in your arteries, reducing your risk of heart attack. It works gradually and silently — daily consistency is what protects your heart.',
     },
-    'zu': {
-      'diabetes_why_title': 'Kungani kubalulekile ukuphuza amaphilisi esifo sikashukela nsuku zonke',
+    'am': {
+      'diabetes_why_title': 'የስኳር መድኃኒትዎን በየቀኑ መውሰድ ለምን አስፈላጊ ነው',
       'diabetes_why_body':
-          'Umuthi kashukela ugcina ushukela wegazi ulinganisekile. Ukweqa imithi kuvumela ushukela ukhuphuke ngokuthula, ulimaze amehlo, izinso, nezinzwa. Wuthathe ngesikhathi esifanayo nsuku zonke — noma uzizwa kahle.',
-      'htn_why_title': 'Ukulawula umfutho wegazi ophezulu',
+          'የስኳር መድኃኒት የደምዎን ስኳር የተረጋጋ ያደርጋል። መድኃኒት መዝለል ስኳር በዝምታ እንዲጨምር በማድረግ ዓይኖችዎን፣ ኩላሊቶችዎን እና ነርቮችዎን ይጎዳል። ጤናማ ሲሰማዎትም እንኳ በየቀኑ በተመሳሳይ ሰዓት ይውሰዱት — ከፍተኛ ስኳር ብዙ ጊዜ ምልክት የለውም።',
+      'htn_why_title': 'ከፍተኛ የደም ግፊትን መቆጣጠር',
       'htn_why_body':
-          'Umfutho wegazi ophezulu awuvami ukuzwakala, kodwa ucindezela inhliziyo futhi ungabangela isifo sohlangothi. Umuthi wansuku zonke uwehlisa. Ungayeki ngoba uzizwa kahle.',
-      'hiv_why_title': 'Ukuhlala ungatholakali ngokwelashwa kwe-HIV',
+          'ከፍተኛ የደም ግፊት ብዙ ጊዜ አያማም፣ ነገር ግን ልብዎን በዝምታ ያደክማል እንዲሁም የስትሮክ መንስኤ ሊሆን ይችላል። የዕለት ተዕለት መድኃኒት ግፊቱን ዝቅ ያደርጋል። ጤናማ ስለሚሰማዎት ብቻ በፍጹም አያቁሙ — መድኃኒቱ ነው ጤናማ የሚያደርግዎት።',
+      'hiv_why_title': 'በኤች አይ ቪ ሕክምና የማይታወቅ ሆኖ መቆየት',
       'hiv_why_body':
-          'Ukuphuza ama-ARV mihla yonke kugcina igciwane liphansi kangangokuthi alitholakali — futhi alidluliseki. Ukweqa imithi kuvumela igciwane libuye futhi kwakhe ukumelana.',
-      'tb_why_title': 'Qedela uhlelo lwakho lwe-TB lonke',
+          'የ ART መድኃኒትዎን በየቀኑ መውሰድ ቫይረሱን እስከ ማይታወቅ ድረስ ዝቅ ያደርጋል — እና ሊተላለፍ አይችልም። መድኃኒት መዝለል ቫይረሱ እንዲመለስ እና መቋቋም እንዲገነባ ያደርጋል። ቀጣይነት ጠንካራ ጥበቃዎ ነው።',
+      'tb_why_title': 'ሙሉ የቲቢ ሕክምናዎን መጨረስ',
       'tb_why_body':
-          'Ukwelashwa kwe-TB kufanele kuqedwe ngokugcwele, noma usuzizwa ungcono. Ukuyeka kusenesikhathi kuvumela amagciwane abuye eqine. Wonke umuthi, kuze kube sekugcineni, yiwo okwelaphayo.',
-      'chol_why_title': 'Ukulawula i-cholesterol',
+          'የቲቢ ሕክምና የተሻለ ሲሰማዎትም እንኳ ሙሉ በሙሉ መጠናቀቅ አለበት። ቀድሞ ማቆም ባክቴሪያው የበለጠ ጠንካራ ሆኖ እንዲመለስ ያደርጋል። እያንዳንዱ መድኃኒት እስከ መጨረሻው ድረስ የሚፈውስዎት ነው።',
+      'chol_why_title': 'ኮሌስትሮልን መቆጣጠር',
       'chol_why_body':
-          'Umuthi we-cholesterol wehlisa amafutha emithanjeni yakho, unciphisa ingozi yokuhlaselwa yinhliziyo. Usebenza kancane futhi ngokuthula — ukungaguquki nsuku zonke yikho okuvikela inhliziyo.',
-    },
-    'xh': {
-      'diabetes_why_title': 'Kutheni kubalulekile ukusela amayeza eswekile yonke imihla',
-      'diabetes_why_body':
-          'Iyeza leswekile ligcina iswekile yegazi izinzile. Ukutsiba amayeza kuvumela iswekile inyuke ngokuthe cwaka, yonakalise amehlo, izintso, neminwe. Lithathe ngexesha elinye yonke imihla.',
-      'htn_why_title': 'Ukulawula uxinzelelo lwegazi oluphezulu',
-      'htn_why_body':
-          'Uxinzelelo lwegazi oluphezulu aludli, kodwa luxina intliziyo lunokubangela istroke. Iyeza lemihla ngemihla luyalwehlisa. Sukuyeka kuba uziva ngcono.',
-      'hiv_why_title': 'Ukuhlala ungafumaneki ngonyango lwe-HIV',
-      'hiv_why_body':
-          'Ukusela ama-ARV yonke imihla kugcina intsholongwane isezantsi kangangokuba ayifumaneki — ingadluliseki. Ukutsiba amayeza kuvumela intsholongwane ibuye.',
-      'tb_why_title': 'Gqibezela lonke unyango lwakho lwe-TB',
-      'tb_why_body':
-          'Unyango lwe-TB kufuneka lugqitywe ngokupheleleyo, nokuba uziva ngcono. Ukuyeka kwangethuba kuvumela iibhaktiriya zibuye zomelele. Lonke iyeza, kude kuse ekugqibeleni, yiyo into ekuphilisayo.',
-      'chol_why_title': 'Ukulawula i-cholesterol',
-      'chol_why_body':
-          'Iyeza le-cholesterol lehlisa amafutha kwimithambo yakho, linciphisa umngcipheko wokuhlaselwa yintliziyo. Lisebenza ngokuthe ngcembe — ukungaguquguquki yonke imihla kukho okukhusela intliziyo.',
-    },
-    'af': {
-      'diabetes_why_title': 'Hoekom dit saak maak om jou diabetespille daagliks te neem',
-      'diabetes_why_body':
-          'Diabetesmedikasie hou jou bloedsuiker stabiel. Om dosisse oor te slaan laat suiker stil styg en beskadig jou oë, niere en senuwees. Neem dit elke dag op dieselfde tyd — selfs wanneer jy goed voel.',
-      'htn_why_title': 'Beheer van hoë bloeddruk',
-      'htn_why_body':
-          'Hoë bloeddruk maak selde seer, maar dit belas stil jou hart en kan ’n beroerte veroorsaak. Daaglikse medikasie hou die druk laag. Hou nooit op omdat jy goed voel nie.',
-      'hiv_why_title': 'Bly onopspoorbaar met MIV-behandeling',
-      'hiv_why_body':
-          'Om jou ARV’s elke dag te neem hou die virus so laag dat dit nie opgespoor kan word nie — en nie oorgedra kan word nie. Gemiste dosisse laat die virus terugkeer en bou weerstand.',
-      'tb_why_title': 'Voltooi jou volle TB-kursus',
-      'tb_why_body':
-          'TB-behandeling moet ten volle voltooi word, selfs nadat jy beter voel. Om vroeg op te hou laat die bakterieë sterker terugkom. Elke dosis, heel tot die einde, is wat jou genees.',
-      'chol_why_title': 'Bestuur van cholesterol',
-      'chol_why_body':
-          'Cholesterolmedikasie verlaag die vetterige opbou in jou are en verminder jou risiko vir ’n hartaanval. Dit werk geleidelik — daaglikse konsekwentheid beskerm jou hart.',
+          'የኮሌስትሮል መድኃኒት በደም ቧንቧዎችዎ ውስጥ ያለውን የስብ ክምችት ይቀንሳል፣ የልብ ድካም አደጋን ይቀንሳል። ቀስ በቀስ እና በዝምታ ይሰራል — የዕለት ተዕለት ቀጣይነት ልብዎን የሚጠብቅ ነው።',
     },
   };
 }

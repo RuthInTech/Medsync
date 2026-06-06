@@ -22,7 +22,7 @@ class ReportService {
   }) {
     final clock = now ?? DateTime.now();
     final b = StringBuffer();
-    b.writeln('SIYAPHILA — ADHERENCE SUMMARY');
+    b.writeln('MEDISYNC — ADHERENCE SUMMARY');
     b.writeln('Generated: ${_date(clock)}');
     b.writeln('=' * 40);
     b.writeln('Patient: ${patient.name}  (age ${patient.age})');
@@ -50,7 +50,7 @@ class ReportService {
       b.writeln('    ${_medLine(med, medEvents)}');
     }
     b.writeln('');
-    b.writeln('Shared from the Siyaphila patient app.');
+    b.writeln('Shared from the Medisync patient app.');
     return b.toString();
   }
 

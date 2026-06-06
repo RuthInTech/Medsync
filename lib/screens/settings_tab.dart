@@ -70,7 +70,7 @@ class SettingsTab extends StatelessWidget {
               trailing: const Icon(Icons.send),
               onTap: () async {
                 await app.notifications.showNow(
-                  'Siyaphila',
+                  'Medisync',
                   'Time for your medication 💊',
                 );
                 if (!context.mounted) return;

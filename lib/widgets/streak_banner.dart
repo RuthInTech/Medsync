@@ -5,7 +5,7 @@ import '../models/adherence_stats.dart';
 import '../models/enums.dart';
 
 /// Hero gamification banner: a completion ring plus streak, points and best
-/// streak metrics, rendered on the Siyaphila brand gradient.
+/// streak metrics, rendered on the Medisync brand gradient.
 class StreakBanner extends StatelessWidget {
   const StreakBanner({
     super.key,

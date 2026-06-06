@@ -15,9 +15,9 @@ class StorageService {
 
   final SharedPreferences _prefs;
 
-  static const _kPatient = 'siyaphila.patient';
-  static const _kEvents = 'siyaphila.events';
-  static const _kOnboarded = 'siyaphila.onboarded';
+  static const _kPatient = 'medisync.patient';
+  static const _kEvents = 'medisync.events';
+  static const _kOnboarded = 'medisync.onboarded';
 
   static Future<StorageService> create() async {
     final prefs = await SharedPreferences.getInstance();

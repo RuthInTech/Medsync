@@ -4,7 +4,7 @@ import '../models/dose_event.dart';
 import '../models/enums.dart';
 import '../models/risk_assessment.dart';
 
-/// Siyaphila's early-warning non-adherence model.
+/// Medisync's early-warning non-adherence model.
 ///
 /// This is a transparent, rule-based stand-in for the production ML model. It
 /// is deliberately *explainable*: it returns the individual behavioral signals
