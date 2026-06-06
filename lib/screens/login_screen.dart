@@ -63,7 +63,6 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 8),
               _buildLoginButton(),
               const SizedBox(height: 20),
-              _buildDemoNote(),
               const SizedBox(height: 32),
               _buildRegisterLink(),
             ],
@@ -180,28 +179,6 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildDemoNote() {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppTheme.secondary.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: AppTheme.secondary.withValues(alpha: 0.25)),
-      ),
-      child: Row(
-        children: [
-          Icon(Icons.info_outline, color: AppTheme.secondary, size: 18),
-          const SizedBox(width: 8),
-          const Expanded(
-            child: Text(
-              'Demo: start backend with `uvicorn main:app --reload` then register a new account.',
-              style: TextStyle(fontSize: 12.5, height: 1.4),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget _buildRegisterLink() {
     return Row(

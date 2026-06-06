@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
 import '../services/app_state.dart';
 import '../theme.dart';
-import 'clinician_tab.dart';
 import 'education_tab.dart';
 import 'home_tab.dart';
 import 'reports_tab.dart';
@@ -24,7 +23,6 @@ class _HomeShellState extends State<HomeShell> {
     HomeTab(),
     EducationTab(),
     ReportsTab(),
-    ClinicianTab(),
     SettingsTab(),
   ];
 
@@ -58,10 +56,6 @@ class _HomeShellState extends State<HomeShell> {
                 icon: const Icon(Icons.bar_chart_outlined),
                 selectedIcon: const Icon(Icons.bar_chart),
                 label: l.t('report')),
-            NavigationDestination(
-                icon: const Icon(Icons.local_hospital_outlined),
-                selectedIcon: const Icon(Icons.local_hospital),
-                label: l.t('clinic')),
             NavigationDestination(
                 icon: const Icon(Icons.settings_outlined),
                 selectedIcon: const Icon(Icons.settings),

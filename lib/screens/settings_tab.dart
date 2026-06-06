@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../l10n/app_localizations.dart';
 import '../models/enums.dart';
+import '../models/patient.dart';
 import '../main.dart';
 import '../services/app_state.dart';
 import '../theme.dart';
@@ -236,7 +237,7 @@ class SettingsTab extends StatelessWidget {
 
 class _SettingsHeader extends StatelessWidget {
   const _SettingsHeader({required this.patient});
-  final dynamic patient;
+  final PatientProfile patient;
 
   @override
   Widget build(BuildContext context) {
@@ -252,7 +253,7 @@ class _SettingsHeader extends StatelessWidget {
                 radius: 24,
                 backgroundColor: Colors.white.withValues(alpha: 0.25),
                 child: Text(
-                  patient.name.characters.first.toUpperCase() as String,
+                  patient.name.characters.first.toUpperCase(),
                   style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w800,
@@ -265,14 +266,14 @@ class _SettingsHeader extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      patient.name as String,
+                      patient.name,
                       style: const TextStyle(
                           color: Colors.white,
                           fontSize: 16,
                           fontWeight: FontWeight.w700),
                     ),
                     Text(
-                      '${patient.age}y · ${(patient.conditions as List).map((c) => (c as dynamic).label).join(', ')}',
+                      '${patient.age}y · ${patient.conditions.map((c) => c.label).join(', ')}',
                       style: const TextStyle(color: Colors.white70, fontSize: 12.5),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
