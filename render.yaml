@@ -11,12 +11,6 @@ services:
       - key: SECRET_KEY
         generateValue: true          # Render auto-generates a secure random value
       - key: DATABASE_URL
-        value: sqlite:////data/siyaphila.db   # 4 slashes = absolute path on disk
+        sync: false   # Set manually in Render dashboard — paste Supabase connection string
       - key: PORT
         value: 10000
-
-    # Uncomment to add a 1 GB persistent disk (requires paid plan on Render)
-    # disk:
-    #   name: siyaphila-data
-    #   mountPath: /data
-    #   sizeGB: 1

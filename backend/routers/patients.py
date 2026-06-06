@@ -1,4 +1,3 @@
-import json
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from database import get_db
@@ -22,7 +21,7 @@ def _serialize(patient: models.Patient) -> schemas.PatientResponse:
         user_id=patient.user_id,
         name=patient.name,
         age=patient.age,
-        conditions=json.loads(patient.conditions or "[]"),
+        conditions=patient.conditions or [],
         language=patient.language,
         is_onboarded=patient.is_onboarded,
     )
@@ -48,7 +47,7 @@ def update_my_profile(
     if body.age is not None:
         patient.age = body.age
     if body.conditions is not None:
-        patient.conditions = json.dumps(body.conditions)
+        patient.conditions = body.conditions
     if body.language is not None:
         patient.language = body.language
     if body.is_onboarded is not None:

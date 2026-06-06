@@ -1,5 +1,6 @@
 from datetime import datetime
 from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, Integer, String, Text
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 from database import Base
 
@@ -23,7 +24,7 @@ class Patient(Base):
     user_id = Column(Integer, ForeignKey("users.id"), unique=True, nullable=False)
     name = Column(String, nullable=False)
     age = Column(Integer, default=30)
-    conditions = Column(Text, default="[]")   # JSON array of condition names
+    conditions = Column(JSONB, default=list)
     language = Column(String, default="en")
     is_onboarded = Column(Boolean, default=False)
 
@@ -40,7 +41,7 @@ class Medication(Base):
     name = Column(String, nullable=False)
     condition = Column(String, nullable=False)
     dosage_amount = Column(String, default="1 tablet")
-    schedule_times = Column(Text, default="[]")   # JSON: [{"hour":8,"minute":0}]
+    schedule_times = Column(JSONB, default=list)  # [{"hour":8,"minute":0}]
     proof_method = Column(String, default="tap")  # tap | photo | qrScan
     window_minutes = Column(Integer, default=60)
     instructions = Column(Text, default="")
@@ -70,8 +71,8 @@ class RiskScore(Base):
     id = Column(Integer, primary_key=True, index=True)
     patient_id = Column(Integer, ForeignKey("patients.id"), nullable=False)
     score = Column(Float, default=0.0)
-    tier = Column(String, default="low")   # low | medium | high
-    factors = Column(Text, default="[]")   # JSON array of {label, weight}
+    tier = Column(String, default="low")  # low | medium | high
+    factors = Column(JSONB, default=list)  # [{"label": ..., "weight": ...}]
     computed_at = Column(DateTime, default=datetime.utcnow)
 
     patient = relationship("Patient", back_populates="risk_scores")

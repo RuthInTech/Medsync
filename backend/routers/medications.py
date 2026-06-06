@@ -1,4 +1,3 @@
-import json
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from database import get_db
@@ -23,7 +22,7 @@ def _serialize(med: models.Medication) -> schemas.MedicationResponse:
         name=med.name,
         condition=med.condition,
         dosage_amount=med.dosage_amount,
-        schedule_times=[schemas.DoseTimeSchema(**t) for t in json.loads(med.schedule_times or "[]")],
+        schedule_times=[schemas.DoseTimeSchema(**t) for t in (med.schedule_times or [])],
         proof_method=med.proof_method,
         window_minutes=med.window_minutes,
         instructions=med.instructions or "",
@@ -56,7 +55,7 @@ def create_medication(
         name=body.name,
         condition=body.condition,
         dosage_amount=body.dosage_amount,
-        schedule_times=json.dumps([t.model_dump() for t in body.schedule_times]),
+        schedule_times=[t.model_dump() for t in body.schedule_times],
         proof_method=body.proof_method,
         window_minutes=body.window_minutes,
         instructions=body.instructions,
@@ -88,7 +87,7 @@ def update_medication(
     if body.dosage_amount is not None:
         med.dosage_amount = body.dosage_amount
     if body.schedule_times is not None:
-        med.schedule_times = json.dumps([t.model_dump() for t in body.schedule_times])
+        med.schedule_times = [t.model_dump() for t in body.schedule_times]
     if body.proof_method is not None:
         med.proof_method = body.proof_method
     if body.window_minutes is not None:

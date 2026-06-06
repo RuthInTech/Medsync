@@ -26,13 +26,11 @@ def _compute_risk(events: list[models.DoseEvent], conditions: list[str]) -> sche
     miss_rate = missed / total if total > 0 else 0
     late_rate = late / total if total > 0 else 0
 
-    # Check for recent streak break (last 7 days)
     cutoff_7 = datetime.utcnow() - timedelta(days=7)
     recent = [e for e in events if e.scheduled_for >= cutoff_7]
     recent_missed = sum(1 for e in recent if e.status in ("missed", "ignored"))
     recent_miss_rate = recent_missed / len(recent) if recent else 0
 
-    # Condition severity weights
     high_severity = {"hiv", "tuberculosis"}
     severity_boost = 15.0 if any(c in high_severity for c in conditions) else 0.0
 
@@ -47,7 +45,7 @@ def _compute_risk(events: list[models.DoseEvent], conditions: list[str]) -> sche
         ))
     if recent_miss_rate > 0.3:
         factors.append(schemas.RiskFactorSchema(
-            label=f"Declining adherence trend in last 7 days",
+            label="Declining adherence trend in last 7 days",
             weight=recent_miss_rate * 25,
         ))
     if late_rate > 0.1:
@@ -85,8 +83,7 @@ def get_my_risk(
     if not patient:
         raise HTTPException(status_code=404, detail="Patient profile not found")
 
-    import json
-    conditions = json.loads(patient.conditions or "[]")
+    conditions = patient.conditions or []
     cutoff = datetime.utcnow() - timedelta(days=30)
     med_ids = [m.id for m in patient.medications]
 
@@ -101,7 +98,7 @@ def get_my_risk(
         patient_id=patient.id,
         score=result.score,
         tier=result.tier,
-        factors=json.dumps([f.model_dump() for f in result.factors]),
+        factors=[f.model_dump() for f in result.factors],
     )
     db.add(risk_record)
     db.commit()
