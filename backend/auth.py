@@ -49,9 +49,10 @@ def get_current_user(
     db: Session = Depends(get_db),
 ) -> models.User:
     payload = decode_token(credentials.credentials)
-    user_id: int = payload.get("sub")
-    if user_id is None:
+    sub = payload.get("sub")
+    if sub is None:
         raise HTTPException(status_code=401, detail="Invalid token payload")
+    user_id = int(sub)
     user = db.query(models.User).filter(models.User.id == user_id).first()
     if user is None:
         raise HTTPException(status_code=401, detail="User not found")

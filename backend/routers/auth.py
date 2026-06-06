@@ -26,7 +26,7 @@ def register(body: schemas.RegisterRequest, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(user)
 
-    token = create_access_token({"sub": user.id, "role": user.role})
+    token = create_access_token({"sub": str(user.id), "role": user.role})
     return schemas.TokenResponse(
         access_token=token,
         role=user.role,
@@ -48,7 +48,7 @@ def login(body: schemas.LoginRequest, db: Session = Depends(get_db)):
     if user.patient:
         is_onboarded = user.patient.is_onboarded
 
-    token = create_access_token({"sub": user.id, "role": user.role})
+    token = create_access_token({"sub": str(user.id), "role": user.role})
     return schemas.TokenResponse(
         access_token=token,
         role=user.role,
