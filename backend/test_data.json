@@ -1,0 +1,316 @@
+{
+  "_readme": "Siyaphila API — test payloads for every endpoint. Use with Swagger UI at /docs, Bruno, Insomnia, or Postman.",
+  "_base_url": "https://siyaphila-api.onrender.com",
+
+  "auth": {
+    "register_patient_low_risk": {
+      "endpoint": "POST /auth/register",
+      "body": {
+        "email": "nomsa.dlamini@test.com",
+        "password": "Test1234!",
+        "name": "Nomsa Dlamini",
+        "role": "patient"
+      },
+      "expected": { "role": "patient", "is_onboarded": false }
+    },
+    "register_patient_medium_risk": {
+      "endpoint": "POST /auth/register",
+      "body": {
+        "email": "sipho.ndlovu@test.com",
+        "password": "Test1234!",
+        "name": "Sipho Ndlovu",
+        "role": "patient"
+      },
+      "expected": { "role": "patient", "is_onboarded": false }
+    },
+    "register_patient_high_risk": {
+      "endpoint": "POST /auth/register",
+      "body": {
+        "email": "thabo.molefe@test.com",
+        "password": "Test1234!",
+        "name": "Thabo Molefe",
+        "role": "patient"
+      },
+      "expected": { "role": "patient", "is_onboarded": false }
+    },
+    "register_clinician": {
+      "endpoint": "POST /auth/register",
+      "body": {
+        "email": "dr.mokoena@test.com",
+        "password": "Clinic1234!",
+        "name": "Dr. Sarah Mokoena",
+        "role": "clinician"
+      },
+      "expected": { "role": "clinician", "is_onboarded": false }
+    },
+    "login_patient": {
+      "endpoint": "POST /auth/login",
+      "body": {
+        "email": "nomsa.dlamini@test.com",
+        "password": "Test1234!"
+      },
+      "expected": { "token_type": "bearer" }
+    },
+    "login_clinician": {
+      "endpoint": "POST /auth/login",
+      "body": {
+        "email": "dr.mokoena@test.com",
+        "password": "Clinic1234!"
+      },
+      "expected": { "role": "clinician" }
+    },
+    "login_wrong_password": {
+      "endpoint": "POST /auth/login",
+      "body": {
+        "email": "nomsa.dlamini@test.com",
+        "password": "WrongPass!"
+      },
+      "expected_status": 401,
+      "expected": { "detail": "Incorrect email or password" }
+    },
+    "register_duplicate_email": {
+      "endpoint": "POST /auth/register",
+      "body": {
+        "email": "nomsa.dlamini@test.com",
+        "password": "Test1234!",
+        "name": "Duplicate",
+        "role": "patient"
+      },
+      "expected_status": 400,
+      "expected": { "detail": "Email already registered" }
+    }
+  },
+
+  "patients": {
+    "get_my_profile": {
+      "endpoint": "GET /patients/me",
+      "auth": "Bearer <token>",
+      "expected": { "is_onboarded": false }
+    },
+    "update_profile_nomsa": {
+      "endpoint": "PUT /patients/me",
+      "auth": "Bearer <nomsa_token>",
+      "body": {
+        "name": "Nomsa Dlamini",
+        "age": 45,
+        "conditions": ["diabetes", "hypertension"],
+        "language": "en",
+        "is_onboarded": true
+      },
+      "expected": { "age": 45, "is_onboarded": true }
+    },
+    "update_profile_sipho": {
+      "endpoint": "PUT /patients/me",
+      "auth": "Bearer <sipho_token>",
+      "body": {
+        "name": "Sipho Ndlovu",
+        "age": 32,
+        "conditions": ["hiv", "highCholesterol"],
+        "language": "en",
+        "is_onboarded": true
+      }
+    },
+    "update_profile_thabo": {
+      "endpoint": "PUT /patients/me",
+      "auth": "Bearer <thabo_token>",
+      "body": {
+        "name": "Thabo Molefe",
+        "age": 58,
+        "conditions": ["tuberculosis", "hypertension", "hiv"],
+        "language": "en",
+        "is_onboarded": true
+      }
+    }
+  },
+
+  "medications": {
+    "create_metformin": {
+      "endpoint": "POST /medications/",
+      "auth": "Bearer <nomsa_token>",
+      "body": {
+        "name": "Metformin",
+        "condition": "diabetes",
+        "dosage_amount": "500 mg",
+        "schedule_times": [
+          { "hour": 8, "minute": 0 },
+          { "hour": 20, "minute": 0 }
+        ],
+        "proof_method": "tap",
+        "window_minutes": 60,
+        "instructions": "Take with food"
+      }
+    },
+    "create_amlodipine": {
+      "endpoint": "POST /medications/",
+      "auth": "Bearer <nomsa_token>",
+      "body": {
+        "name": "Amlodipine",
+        "condition": "hypertension",
+        "dosage_amount": "5 mg",
+        "schedule_times": [
+          { "hour": 8, "minute": 0 }
+        ],
+        "proof_method": "tap",
+        "window_minutes": 90,
+        "instructions": "Take in the morning"
+      }
+    },
+    "create_art_tld": {
+      "endpoint": "POST /medications/",
+      "auth": "Bearer <sipho_token>",
+      "body": {
+        "name": "ART (TLD)",
+        "condition": "hiv",
+        "dosage_amount": "1 tablet",
+        "schedule_times": [
+          { "hour": 21, "minute": 0 }
+        ],
+        "proof_method": "photo",
+        "window_minutes": 60,
+        "instructions": "Take at night, do not skip"
+      }
+    },
+    "create_atorvastatin": {
+      "endpoint": "POST /medications/",
+      "auth": "Bearer <sipho_token>",
+      "body": {
+        "name": "Atorvastatin",
+        "condition": "highCholesterol",
+        "dosage_amount": "20 mg",
+        "schedule_times": [
+          { "hour": 20, "minute": 0 }
+        ],
+        "proof_method": "tap",
+        "window_minutes": 60,
+        "instructions": "Take with evening meal"
+      }
+    },
+    "create_tb_regimen": {
+      "endpoint": "POST /medications/",
+      "auth": "Bearer <thabo_token>",
+      "body": {
+        "name": "TB Regimen (RHZE)",
+        "condition": "tuberculosis",
+        "dosage_amount": "4 tablets",
+        "schedule_times": [
+          { "hour": 7, "minute": 30 }
+        ],
+        "proof_method": "qrScan",
+        "window_minutes": 60,
+        "instructions": "Take on an empty stomach. Critical: do not miss doses."
+      }
+    },
+    "create_lisinopril": {
+      "endpoint": "POST /medications/",
+      "auth": "Bearer <thabo_token>",
+      "body": {
+        "name": "Lisinopril",
+        "condition": "hypertension",
+        "dosage_amount": "10 mg",
+        "schedule_times": [
+          { "hour": 9, "minute": 0 }
+        ],
+        "proof_method": "tap",
+        "window_minutes": 90,
+        "instructions": "Take with or without food"
+      }
+    },
+    "list_medications": {
+      "endpoint": "GET /medications/",
+      "auth": "Bearer <token>"
+    },
+    "update_medication": {
+      "endpoint": "PUT /medications/{id}",
+      "auth": "Bearer <token>",
+      "body": {
+        "dosage_amount": "1000 mg",
+        "window_minutes": 90
+      }
+    },
+    "deactivate_medication": {
+      "endpoint": "PUT /medications/{id}",
+      "auth": "Bearer <token>",
+      "body": {
+        "active": false
+      }
+    }
+  },
+
+  "doses": {
+    "get_todays_doses": {
+      "endpoint": "GET /doses/today",
+      "auth": "Bearer <token>",
+      "note": "Returns dose events for today. Events are created when Flutter app loads, not via API directly."
+    },
+    "get_dose_history_30_days": {
+      "endpoint": "GET /doses/history?days=30",
+      "auth": "Bearer <token>"
+    },
+    "get_dose_history_7_days": {
+      "endpoint": "GET /doses/history?days=7",
+      "auth": "Bearer <token>"
+    },
+    "confirm_dose_tap": {
+      "endpoint": "POST /doses/{dose_id}/confirm",
+      "auth": "Bearer <token>",
+      "body": {
+        "proof_method": "tap"
+      },
+      "expected": { "status": "taken" }
+    },
+    "confirm_dose_photo": {
+      "endpoint": "POST /doses/{dose_id}/confirm",
+      "auth": "Bearer <token>",
+      "body": {
+        "proof_method": "photo"
+      }
+    },
+    "confirm_dose_qr": {
+      "endpoint": "POST /doses/{dose_id}/confirm",
+      "auth": "Bearer <token>",
+      "body": {
+        "proof_method": "qrScan"
+      }
+    }
+  },
+
+  "risk": {
+    "get_my_risk": {
+      "endpoint": "GET /risk/me",
+      "auth": "Bearer <token>",
+      "expected": {
+        "tier": "low | medium | high",
+        "score": "0.0 – 100.0",
+        "factors": "array of { label, weight }"
+      }
+    }
+  },
+
+  "clinician": {
+    "get_roster": {
+      "endpoint": "GET /clinician/roster",
+      "auth": "Bearer <clinician_token>",
+      "note": "Returns all onboarded patients sorted by risk score descending",
+      "expected": "array of ClinicianPatientResponse"
+    },
+    "get_alerts": {
+      "endpoint": "GET /clinician/alerts",
+      "auth": "Bearer <clinician_token>",
+      "note": "Returns only high-risk patients"
+    },
+    "patient_access_blocked": {
+      "endpoint": "GET /clinician/roster",
+      "auth": "Bearer <patient_token>",
+      "expected_status": 403,
+      "expected": { "detail": "Clinician access required" }
+    }
+  },
+
+  "health": {
+    "health_check": {
+      "endpoint": "GET /health",
+      "auth": "none",
+      "expected": { "status": "healthy", "service": "Siyaphila API" }
+    }
+  }
+}

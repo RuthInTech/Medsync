@@ -16,7 +16,11 @@
       "Bash(dmesg)",
       "Bash(journalctl -k --since \"30 min ago\")",
       "Bash(flutter pub *)",
-      "Bash(docker build *)"
+      "Bash(docker build *)",
+      "Bash(pip install *)",
+      "Bash(python seed_test.py)",
+      "Bash(/tmp/siyaphila-test-env/bin/pip install *)",
+      "Bash(/tmp/siyaphila-test-env/bin/python seed_test.py)"
     ]
   }
 }
